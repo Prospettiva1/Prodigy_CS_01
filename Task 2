@@ -1,0 +1,53 @@
+from PIL import Image
+
+def encrypt_image(image_path, output_path, key):
+    # Load the image
+    img = Image.open(image_path)
+    pixels = img.load()
+    
+    # Get image dimensions
+    width, height = img.size
+    
+    # Encrypt pixels
+    for y in range(height):
+        for x in range(width):
+            r, g, b = pixels[x, y]
+            # Apply a simple transformation using the key
+            r = (r + key) % 256
+            g = (g + key) % 256
+            b = (b + key) % 256
+            pixels[x, y] = (r, g, b)
+    
+    # Save encrypted image
+    img.save(output_path)
+
+def decrypt_image(encrypted_image_path, output_path, key):
+    # Load the encrypted image
+    img = Image.open(encrypted_image_path)
+    pixels = img.load()
+    
+    # Get image dimensions
+    width, height = img.size
+    
+    # Decrypt pixels
+    for y in range(height):
+        for x in range(width):
+            r, g, b = pixels[x, y]
+            # Reverse the transformation using the key
+            r = (r - key) % 256
+            g = (g - key) % 256
+            b = (b - key) % 256
+            pixels[x, y] = (r, g, b)
+    
+    # Save decrypted image
+    img.save(output_path)
+
+# Example usage
+if __name__ == "__main__":
+    key = 50  # A simple encryption key
+    
+    # Encrypt the image
+    encrypt_image('original_image.png', 'encrypted_image.png', key)
+    
+    # Decrypt the image
+    decrypt_image('encrypted_image.png', 'decrypted_image.png', key)
